@@ -1,0 +1,78 @@
+
+/* quote-mobile.css
+ * Drop-in stylesheet to make quote line-item fields full-width on phones.
+ * Works with existing <table> markup. Add class="quote-table" to your table.
+ */
+
+:root {
+  --qr-padding: 12px;
+  --qr-radius: 10px;
+  --qr-border: 1px solid #E2E8F0;
+}
+
+/* Desktop/tablet keeps normal table */
+table.quote-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+table.quote-table th, table.quote-table td {
+  border-bottom: 1px solid #EDF2F7;
+  padding: 10px 12px;
+}
+table.quote-table input, table.quote-table select {
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Mobile: transform rows into stacked cards with full-width inputs */
+@media (max-width: 768px) {
+  table.quote-table thead {
+    display: none; /* we’ll add labels per cell via data-label */
+  }
+  table.quote-table, 
+  table.quote-table tbody, 
+  table.quote-table tr, 
+  table.quote-table td {
+    display: block;
+    width: 100%;
+  }
+  table.quote-table tr {
+    background: #FFFFFF;
+    border: var(--qr-border);
+    border-radius: var(--qr-radius);
+    padding: var(--qr-padding);
+    margin-bottom: 14px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+  }
+  table.quote-table td {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 6px;
+    border: 0;
+    padding: 8px 0;
+  }
+  table.quote-table td::before {
+    content: attr(data-label);
+    font-size: 13px;
+    font-weight: 600;
+    color: #4A5568;
+  }
+  table.quote-table input,
+  table.quote-table select {
+    width: 100% !important;
+    font-size: 16px; /* better for iOS keyboards */
+    padding: 10px 12px;
+    border: 1px solid #CBD5E0;
+    border-radius: 8px;
+    outline: none;
+  }
+  /* Optional: make number inputs easier to tap */
+  table.quote-table input[type="number"] {
+    -moz-appearance: textfield;
+  }
+  table.quote-table input[type=number]::-webkit-inner-spin-button, 
+  table.quote-table input[type=number]::-webkit-outer-spin-button { 
+    -webkit-appearance: none; 
+    margin: 0; 
+  }
+}
