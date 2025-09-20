@@ -1,0 +1,661 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Scenic Roots – Quoter MASTER</title>
+<link rel="manifest" href="manifest.json"><meta name="theme-color" content="#1e7f4b">
+<style>
+:root{--b:#1e7f4b;--g:#e5e7eb;--m:#6b7280;--txt:#111}
+*{box-sizing:border-box}body{font-family:system-ui,Segoe UI,Roboto,Arial;margin:0;color:var(--txt);background:#f8fafc}
+header{position:sticky;top:0;z-index:3;background:#fff;border-bottom:1px solid var(--g);padding:8px 12px;display:flex;gap:8px;align-items:center;justify-content:space-between}
+h1,h2,h3{margin:0 0 8px 0}
+button{background:var(--b);color:#fff;border:0;border-radius:8px;padding:8px 12px;font-weight:600;cursor:pointer}
+button.ghost{background:#fff;color:#111;border:1px solid var(--g)}
+main{display:grid;grid-template-columns:420px 1fr;gap:12px;padding:12px}@media(max-width:1100px){main{grid-template-columns:1fr}}
+section{border:1px solid var(--g);border-radius:12px;overflow:hidden;background:#fff}
+section>h3{background:#f6f9f7;padding:8px 10px;border-bottom:1px solid var(--g)}
+.pad{padding:10px}label{font-size:12px;color:var(--m)}input,select,textarea{width:100%;padding:8px;border:1px solid var(--g);border-radius:8px;margin-top:3px;background:#fff}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tiny{font-size:12px;color:var(--m)}
+table{width:100%;border-collapse:collapse}th,td{padding:6px;border-bottom:1px solid var(--g);font-size:14px}th{background:#f6f9f7}
+.right{text-align:right}
+.badge{font-size:12px;color:#1e7f4b;background:#e8f5ee;border-radius:999px;padding:4px 8px}
+#proposal{max-width:980px;margin:0 auto;display:none;padding:16px}
+#proposal .line{display:flex;justify-content:space-between;border-bottom:1px dashed var(--g);padding:6px 0}
+.option-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.card{border:1px solid var(--g);border-radius:12px;padding:10px}
+#annotator{border:1px dashed var(--g);border-radius:8px;max-width:100%;display:block}
+.brandRow{display:flex;gap:8px;align-items:center}
+.colorDot{width:18px;height:18px;border-radius:50%;border:1px solid #cbd5e1;display:inline-block;vertical-align:middle}
+#profitBar{height:10px;border-radius:6px;background:linear-gradient(90deg,#ef4444 0%,#f59e0b 50%,#22c55e 100%);position:relative;overflow:hidden}
+#profitNeedle{height:100%;width:2px;background:#111;position:absolute;top:0}
+.kpi{display:flex;gap:10px;flex-wrap:wrap}.kpi .pill{background:#f1f5f9;border:1px solid #e5e7eb;border-radius:999px;padding:6px 10px;font-size:12px}
+.catalog-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px}
+.catalog-item{border:1px solid var(--g);border-radius:10px;padding:8px}
+.catalog-item h4{margin:0 0 6px 0;font-size:14px}
+.catalog-item .meta{font-size:12px;color:#374151}
+</style>
+<script>if('serviceWorker'in navigator){addEventListener('load',()=>navigator.serviceWorker.register('sw.js'))}</script>
+  <link rel="stylesheet" href="/quote-mobile.css">
+</head>
+<body>
+<header>
+  <div class="brandRow">
+    <img id="brandLogo" alt="Logo" style="height:32px;display:none">
+    <strong>Scenic Roots – Quoter <span class="badge">MASTER</span></strong>
+  </div>
+  <div class="actions" style="display:flex;gap:6px;flex-wrap:wrap">
+    <button id="toggleProposal" class="ghost">Client Proposal</button>
+    <button id="saveLocal" class="ghost">Save</button>
+    <button id="exportCsv" class="ghost">Export CSV</button>
+    <button id="emailQuote" class="ghost">Email (Mail App)</button>
+    <button id="emailViaScript" class="ghost">Email via Script</button>
+    <button id="exportPng" class="ghost">Export PNG</button>
+    <button onclick="window.print()" class="ghost">Export PDF</button>
+  </div>
+</header>
+
+<main>
+  <section><h3>Branding & Business</h3><div class="pad">
+    <div class="row">
+      <div><label>Business</label><input id="bizName" value="Scenic Roots Lawn Care & Landscaping"></div>
+      <div><label>Prepared By</label><input id="preparedBy" value="Jay"></div>
+    </div>
+    <div class="row">
+      <div><label>Phone</label><input id="phone" value="615-308-8477"></div>
+      <div><label>Email</label><input id="email" value="info@scenicroots.net"></div>
+    </div>
+    <div class="row">
+      <div><label>Website</label><input id="website" value="scenicroots.net"></div>
+      <div><label>Primary Color</label><div style="display:flex;align-items:center;gap:8px"><input id="primaryColor" type="color" value="#1e7f4b"><span id="colorDot" class="colorDot" style="background:#1e7f4b"></span></div></div>
+    </div>
+    <div class="row">
+      <div><label>Upload Logo (PNG/JPG)</label><input id="logoInput" type="file" accept="image/*"></div>
+      <div><label>Payment URL (for QR)</label><input id="payUrl" placeholder="https://pay.link/your-checkout"></div>
+    </div>
+  </div></section>
+
+  <section><h3>Settings & Pricing</h3><div class="pad">
+    <div class="row">
+      <div><label>Blended Crew Rate $/hr</label><input id="blended" type="number" step="0.01" value="55"></div>
+      <div><label>Target Profit %</label><input id="targetProfit" type="number" step="0.1" value="25"></div>
+    </div>
+    <div class="row">
+      <div><label>Overhead %</label><input id="overhead" type="number" step="0.1" value="10"></div>
+      <div><label>Sales Tax %</label><input id="taxRate" type="number" step="0.1" value="0"></div>
+    </div>
+    <div class="row">
+      <div><label>Tax Base</label><select id="taxBase"><option>Final</option><option>Materials Only</option><option>Materials + Labor</option></select></div>
+      <div>
+        <label>Rate Plan</label>
+        <select id="ratePlan">
+          <option value="one_time" selected>One-Time Job (0%)</option>
+          <option value="recurring">Recurring Customer (10%)</option>
+          <option value="existing_customer">Existing Customer (15%)</option>
+        </select>
+      </div>
+    </div>
+    <div class="row">
+      <div><label>Override Discount ($ or %)</label><input id="discount" placeholder="e.g. 50 or 10%"><div class="tiny">Typing here overrides the rate plan.</div></div>
+      <div><label>Deposit ($ or %)</label><input id="deposit" placeholder="e.g. 200 or 25%"></div>
+    </div>
+  </div></section>
+
+  <section><h3>Client & Job</h3><div class="pad">
+    <div class="row"><div><label>Client</label><input id="client"></div><div><label>Address</label><input id="address"></div></div>
+<div class="row"><div><label>Client Email</label><input id="clientEmail" type="email" placeholder="client@email.com"></div><div><label>Sheet Sync URL (Apps Script)</label><input id="sheetUrl" placeholder="https://script.google.com/macros/s/.../exec"></div></div>
+    <div class="row"><div><label>Job Name</label><input id="jobName"></div><div><label>Date</label><input id="jobDate" type="date"></div></div><div class="row"><div><label>Quote #</label><input id="quoteNo" readonly></div><div><label>Status</label><select id="status"><option>Draft</option><option>Sent</option><option>Accepted</option><option>Scheduled</option><option>Completed</option><option>Lost</option></select></div></div>
+    <div class="row"><div><label>Notes (mic to dictate)</label><div style="display:flex;gap:6px"><textarea id="notes" rows="2" placeholder="Internal note"></textarea><button id="startDictate" class="ghost">🎤</button></div></div><div></div></div>
+  </div></section>
+
+  <section><h3>Lines & Profit Analyzer</h3><div class="pad">
+    <div class="row">
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <button id="addLine" class="ghost">Add Blank Line</button>
+        <button id="clearLines" class="ghost">Clear Lines</button>
+      </div>
+      <div style="min-width:240px">
+        <div class="tiny">Profit Analyzer</div>
+        <div id="profitBar"><div id="profitNeedle" style="left:0%"></div></div>
+        <div class="kpi" style="margin-top:6px">
+          <div class="pill">Margin: <span id="kpiMargin">--%</span></div>
+          <div class="pill">COGS: <span id="kpiCogs">$0</span></div>
+          <div class="pill">Overhead: <span id="kpiOh">$0</span></div>
+          <div class="pill">Profit $: <span id="kpiProfit">$0</span></div>
+        </div>
+      </div>
+    </div>
+    <table id="lines" class="quote-table">
+      <thead><tr>
+        <th>#</th><th>Description</th><th>Unit</th><th class="right">Qty</th><th class="right">Unit Cost</th>
+        <th class="right">Crew Hrs</th><th class="right">Rate $/hr</th><th class="right">Equip $</th>
+        <th class="right">Taxable?</th><th class="right">Line Total</th><th></th>
+      </tr></thead>
+      <tbody></tbody>
+    </table>
+  </div></section>
+
+  <section><h3>Quick Add: Catalog / Crews / Rentals</h3><div class="pad">
+    <div class="tiny" style="margin-bottom:6px">Tap an item to add it as a line. Edit prices anytime below (saves locally).</div>
+    <h4>Material Catalog</h4>
+    <div id="catalog" class="catalog-grid"></div>
+    <details style="margin-top:8px"><summary>Edit Catalog JSON</summary>
+      <textarea id="catalogJson" rows="10" style="width:100%;font-family:ui-monospace,Consolas,monospace"></textarea>
+      <div style="margin-top:6px;display:flex;gap:8px">
+        <button id="saveCatalog" class="ghost">Save Catalog</button>
+        <button id="resetCatalog" class="ghost">Reset to Defaults</button>
+      </div>
+    </details>
+    <div class="row" style="margin-top:12px">
+      <div>
+        <h4>Crew Templates</h4>
+        <div id="crewBtns" style="display:flex;flex-wrap:wrap;gap:6px"></div>
+      </div>
+      <div>
+        <h4>Equipment Rentals</h4>
+        <div id="equipBtns" style="display:flex;flex-wrap:wrap;gap:6px"></div>
+      </div>
+    </div>
+  </div></section>
+
+  <section><h3>Calculators</h3><div class="pad">
+    <div class="row">
+      <div><label>Area (sq ft)</label><input id="area" type="number" step="0.01"></div>
+      <div><label>Depth (inches)</label><input id="depth" type="number" step="0.1"></div>
+    </div>
+    <div class="row">
+      <div><label>Mulch/Soil (yards)</label><input id="yards" readonly></div>
+      <div><label>Rock (tons)</label><input id="tons" readonly></div>
+    </div>
+    <button id="addCalcLine" class="ghost">Add Calc As Line</button>
+  </div></section>
+
+  <section><h3>Photos / Annotations / Terms</h3><div class="pad">
+    <div class="row">
+      <div><label>Upload Photos</label><input id="photos" type="file" accept="image/*" multiple><div id="thumbs" style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap"></div></div>
+      <div>
+        <label>Annotate (draw)</label>
+        <canvas id="annotator" width="800" height="450"></canvas>
+        <div style="display:flex;gap:6px;margin-top:6px">
+          <button id="annoClear" class="ghost">Clear</button>
+          <button id="annoUse" class="ghost">Add Annotated to Photos</button>
+        </div>
+      </div>
+    </div>
+    <div class="row" style="margin-top:8px">
+      <div><label>Terms</label><textarea id="terms" rows="4">50% deposit to schedule; balance due upon completion. Proposal valid 15 days.</textarea></div>
+      <div>
+        <label>Payment QR (shows in proposal)</label><input id="payUrl2" placeholder="(optional) same as above if blank">
+        <button id="makeQR" class="ghost" style="margin-top:6px">Generate QR</button>
+        <canvas id="qrCanvas" width="180" height="180" style="border:1px solid var(--g);border-radius:8px;margin-top:6px"></canvas>
+      </div>
+    </div>
+  </div></section>
+
+  <section><h3>Client Options</h3><div class="pad">
+    <div class="option-cards">
+      <div class="card"><h4>Basic</h4><div id="optBasic">$0.00</div><button class="ghost" data-opt="Basic" onclick="chooseOption('Basic')">Select Basic</button></div>
+      <div class="card"><h4>Target</h4><div id="optTarget">$0.00</div><button class="ghost" data-opt="Target" onclick="chooseOption('Target')">Select Target</button></div>
+      <div class="card"><h4>Premium</h4><div id="optPremium">$0.00</div><button class="ghost" data-opt="Premium" onclick="chooseOption('Premium')">Select Premium</button></div>
+    </div>
+    <div class="row" style="margin-top:8px">
+      <div><label>Basic % of base</label><input id="pctBasic" type="number" step="1" value="90"></div>
+      <div><label>Target % of base</label><input id="pctTarget" type="number" step="1" value="100"></div>
+    </div>
+    <div class="row">
+      <div><label>Premium % of base</label><input id="pctPremium" type="number" step="1" value="120"></div>
+      <div style="display:flex;align-items:flex-end"><span class="tiny">Client selection shows on the proposal and locks in.</span></div>
+    </div>
+  </div></section>
+</main>
+
+<div id="proposal">
+  <h1>Client Proposal</h1>
+  <div class="line"><strong>Client</strong><span id="pClient"></span></div>
+  <div class="line"><strong>Property</strong><span id="pAddr"></span></div>
+  <div class="line"><strong>Job</strong><span id="pJob"></span></div>
+  <div class="line"><strong>Date</strong><span id="pDate"></span></div>
+  <div class="line"><strong>Contact</strong><span id="pContact"></span></div>
+  <div class="line"><strong>Selected Option</strong><span id="pOption"></span></div>
+
+  <h2>Investment</h2>
+  <div id="investment"></div>
+
+  <h2>Payment</h2>
+  <div class="row"><div><div class="tiny">Scan to pay deposit</div><canvas id="pQR" width="180" height="180" style="border:1px solid var(--g);border-radius:8px"></canvas></div></div>
+
+  <h2>Photos</h2>
+  <div id="pPhotos" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px"></div>
+
+  <h2>Terms</h2>
+  <div id="pTerms">50% deposit to schedule; balance due upon completion. Proposal valid 15 days.</div>
+
+  <h2>Client Signature</h2>
+  <canvas id="sigPad" width="800" height="160" style="border:1px dashed var(--g);border-radius:8px"></canvas><br>
+  <button id="clearSig" class="ghost">Clear</button>
+</div>
+
+<script>
+const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
+const money=n=> (isNaN(n)?0:n).toLocaleString(undefined,{style:'currency',currency:'USD'});
+
+// Theme + logo
+$('#primaryColor').addEventListener('input', e=>{ document.documentElement.style.setProperty('--b', e.target.value); $('#colorDot').style.background=e.target.value; });
+$('#logoInput').addEventListener('change', async e=>{ const f=e.target.files[0]; if(!f) return; const r=new FileReader(); r.onload=ev=>{ $('#brandLogo').src=ev.target.result; $('#brandLogo').style.display='block'; }; r.readAsDataURL(f); });
+
+// Lines
+function addLine(d={}){
+  const tb=$('#lines tbody'); const i=tb.children.length+1;
+  const tr=document.createElement('tr');
+  tr.innerHTML=`
+  <td>${i}</td>
+  <td><input class="desc" value="${d.desc||''}"></td>
+  <td><input class="unit" value="${d.unit||''}" style="width:70px"></td>
+  <td class="right"><input class="qty" type="number" step="0.01" value="${d.qty??0}"></td>
+  <td class="right"><input class="uc" type="number" step="0.01" value="${d.uc??0}"></td>
+  <td class="right"><input class="hrs" type="number" step="0.01" value="${d.hrs??0}"></td>
+  <td class="right"><input class="rate" type="number" step="0.01" value="${d.rate??($('#blended').value||55)}"></td>
+  <td class="right"><input class="eq" type="number" step="0.01" value="${d.eq??0}"></td>
+  <td class="right"><input class="tax" type="checkbox" ${(d.tax??true)?'checked':''}></td>
+  <td class="right"><span class="lt">$0.00</span></td>
+  <td><button class="ghost del">✕</button></td>`;
+  tb.appendChild(tr);
+  tr.querySelector('.del').onclick=()=>{tr.remove(); renumber(); calc();};
+  tr.addEventListener('input', calc);
+  calc();
+}
+function renumber(){[...$('#lines tbody').children].forEach((tr,i)=>tr.children[0].textContent=i+1)}
+function parsePctOr$(v,base){v=(v||'').toString().trim(); if(!v) return 0; return v.endsWith('%')? (parseFloat(v)/100*base) : parseFloat(v);}
+
+// Profit analyzer
+function setNeedle(pct){ const n=Math.max(0,Math.min(100,pct)); $('#profitNeedle').style.left = n+'%'; }
+function updateKpis(marginPct, cogs, oh, profit$){
+  $('#kpiMargin').textContent = (isNaN(marginPct)?'--':(marginPct.toFixed(1)+'%'));
+  $('#kpiCogs').textContent = money(cogs);
+  $('#kpiOh').textContent = money(oh);
+  $('#kpiProfit').textContent = money(profit$);
+}
+
+// Main calc
+function calc(){
+  const rateBlended=+$('#blended').value||0, taxRate=(+$('#taxRate').value||0)/100;
+  let mat=0, lab=0, eq=0;
+  [...$('#lines tbody').children].forEach(tr=>{
+    const qty=+tr.querySelector('.qty').value||0, uc=+tr.querySelector('.uc').value||0;
+    const hrs=+tr.querySelector('.hrs').value||0, rate=+tr.querySelector('.rate').value||rateBlended;
+    const eq$=+tr.querySelector('.eq').value||0;
+    const lt = qty*uc + hrs*rate + eq$;
+    tr.querySelector('.lt').textContent=money(lt);
+    mat += qty*uc; lab += hrs*rate; eq += eq$;
+  });
+  const overhead = (+$('#overhead').value||0)/100 * (mat+lab);
+  const cogs = mat+lab+eq+overhead;
+  const targetProfitPct=(+$('#targetProfit').value||0)/100;
+  const profit$ = targetProfitPct * (mat+lab+eq+overhead);
+  let priceBefore = cogs + profit$;
+
+  let discountRaw = $('#discount').value.trim();
+  if(!discountRaw) discountRaw = ($('#ratePlan').value==='existing_customer')? '15%' : ($('#ratePlan').value==='recurring'? '10%' : '');
+  const disc = parsePctOr$(discountRaw, priceBefore);
+  priceBefore = Math.max(0, priceBefore - (isNaN(disc)?0:disc));
+
+  let taxBase=priceBefore;
+  const mode=$('#taxBase').value;
+  if(mode==='Materials Only') taxBase = mat;
+  if(mode==='Materials + Labor') taxBase = mat+lab;
+  const tax = taxBase * taxRate;
+  const totalDue = priceBefore + tax;
+
+  const dep = parsePctOr$($('#deposit').value, totalDue);
+
+  // Margin % displayed pre-tax vs revenue pre-tax
+  const revenue = priceBefore;
+  const marginPct = revenue>0 ? ( (revenue - cogs) / revenue ) * 100 : NaN;
+  setNeedle(isNaN(marginPct)?0:Math.max(0,Math.min(100, marginPct)));
+  updateKpis(marginPct, cogs, overhead, revenue - cogs);
+
+  // Option tiers
+  const b = +$('#pctBasic').value/100 * totalDue;
+  const t = +$('#pctTarget').value/100 * totalDue;
+  const p = +$('#pctPremium').value/100 * totalDue;
+  $('#optBasic').textContent = money(b);
+  $('#optTarget').textContent = money(t);
+  $('#optPremium').textContent = money(p);
+
+  const inv=$('#investment'); inv.innerHTML='';
+  const add=(k,v,em)=>{const d=document.createElement('div'); d.className='line'; d.innerHTML=`${em?'<strong>':''}<span>${k}</span><span>${money(v)}</span>${em?'</strong>':''}`; inv.appendChild(d);};
+  add('Estimated Investment (pre-tax)', priceBefore, true);
+  add('Sales Tax', tax, false);
+  add('Total Due (Target)', t, true);
+  add('Deposit', dep, false);
+  add('Balance After Deposit', Math.max(0, t-(isNaN(dep)?0:dep)), true);
+}
+
+$('#addLine').onclick=()=>addLine();
+$('#clearLines').onclick=()=>{ $('#lines tbody').innerHTML=''; addLine(); calc(); };
+
+// Calculators
+function updateCalcs(){
+  const area=+$('#area').value||0, depth=+$('#depth').value||0;
+  const yards = area*(depth/12)/27; const tons = yards*1.3;
+  $('#yards').value = yards.toFixed(2); $('#tons').value = tons.toFixed(2);
+}
+$('#area').addEventListener('input', updateCalcs); $('#depth').addEventListener('input', updateCalcs);
+$('#addCalcLine').onclick=()=>{ addLine({desc:`Area ${$('#area').value} sqft @ ${$('#depth').value}"`, unit:'yard', qty:+$('#yards').value||0, uc:80, hrs:0.25, rate:+$('#blended').value||55, tax:true}); };
+
+// Catalog
+const DEFAULT_CATALOG = [{"name":"Lawn Mowing (up to \u00bc acre)","unit":"job","uc":45,"tax":true},{"name":"Lawn Mowing (\u00bd acre)","unit":"job","uc":65,"tax":true},{"name":"Lawn Mowing (\u00bd \u2013 1 acre)","unit":"job","uc":100,"tax":true},{"name":"Edging/Trimming Only","unit":"job","uc":25,"tax":true},{"name":"Grass Seeding","unit":"1000 sqft","uc":100,"tax":true},{"name":"Fertilizing","unit":"application","uc":85,"tax":true},{"name":"Mulch Installation (with barrier)","unit":"yard","uc":125,"tax":true},{"name":"Mulch Only (spread)","unit":"yard","uc":85,"tax":true},{"name":"Flower Bed Clean-Up & Prep","unit":"job","uc":120,"tax":true},{"name":"New Flower Bed Install","unit":"job","uc":600,"tax":true},{"name":"Rock Installation (decorative)","unit":"ton","uc":200,"tax":true},{"name":"Hedge Trimming","unit":"10 ft","uc":75,"tax":true},{"name":"Small Tree Trimming (<12 ft)","unit":"tree","uc":175,"tax":true},{"name":"Tree/Brush Removal","unit":"job","uc":350,"tax":true},{"name":"Spring/Fall Yard Cleanup","unit":"job","uc":450,"tax":true},{"name":"Gutter Cleaning (1-story)","unit":"job","uc":135,"tax":true},{"name":"Pressure Washing","unit":"sqft","uc":0.5,"tax":true},{"name":"Landscape Design Plan (basic)","unit":"job","uc":175,"tax":true},{"name":"Weed Barrier Replacement","unit":"sqft","uc":1.25,"tax":true},{"name":"Planting (flowers/perennials)","unit":"plant","uc":14,"tax":true},{"name":"Haul-Off/Debris Disposal","unit":"load","uc":95,"tax":false}];
+function loadCatalog(){ try{ return JSON.parse(localStorage.getItem('srq_catalog')) || DEFAULT_CATALOG; }catch(e){ return DEFAULT_CATALOG; } }
+function saveCatalog(c){ localStorage.setItem('srq_catalog', JSON.stringify(c)); }
+function renderCatalog(){ 
+  const cat = loadCatalog();
+  const grid = $('#catalog'); grid.innerHTML='';
+  cat.forEach((item, idx)=>{
+    const d=document.createElement('div'); d.className='catalog-item';
+    d.innerHTML = `<h4>${item.name}</h4>
+      <div class="meta">Unit: ${item.unit} • ${item.tax?'Taxable':'Non-taxable'}</div>
+      <div class="meta">${('uc'in item && item.uc>0)? 'Unit Cost: '+money(item.uc): 'Unit Cost: —'}</div>
+      <div style="margin-top:6px"><button class="ghost" data-idx="${idx}">Add</button></div>`;
+    grid.appendChild(d);
+    d.querySelector('button').onclick = ()=> addFromCatalog(idx);
+  });
+  $('#catalogJson').value = JSON.stringify(cat, null, 2);
+}
+function addFromCatalog(idx){
+  const item = loadCatalog()[idx];
+  const blended = +$('#blended').value || 55;
+  addLine({
+    desc: item.name,
+    unit: item.unit,
+    qty: (item.unit==='hr'?1:0),
+    uc: item.uc || 0,
+    hrs: item.hrs || 0,
+    rate: item.rateFromBlended ? blended : (+$('#blended').value||55),
+    eq: 0,
+    tax: (item.tax!==false)
+  });
+}
+$('#saveCatalog').onclick=()=>{ try{ saveCatalog(JSON.parse($('#catalogJson').value)); renderCatalog(); alert('Catalog saved.'); }catch(e){ alert('Invalid JSON'); } };
+$('#resetCatalog').onclick=()=>{ saveCatalog(DEFAULT_CATALOG); renderCatalog(); };
+
+// Crew templates
+const CREWS = [{"name":"2-Man Crew","rate":40},{"name":"3-Man Crew (Lead+2)","rate":55},{"name":"4-Man Crew","rate":70}];
+function renderCrews(){
+  const box = $('#crewBtns'); box.innerHTML='';
+  CREWS.forEach(t=>{
+    const b=document.createElement('button'); b.className='ghost'; b.textContent=`${t.name} ($${t.rate}/hr)`;
+    b.onclick=()=>{ $('#blended').value = t.rate; calc(); };
+    box.appendChild(b);
+  });
+}
+// Rentals
+const RENTALS = [{"name":"Mini-Excavator Rental","unit":"day","uc":300,"tax":false},{"name":"Dump Trailer Rental","unit":"day","uc":120,"tax":false},{"name":"Skid Steer Rental","unit":"day","uc":250,"tax":false}];
+function renderEquip(){
+  const box = $('#equipBtns'); box.innerHTML='';
+  RENTALS.forEach(t=>{
+    const b=document.createElement('button'); b.className='ghost'; b.textContent=`${t.name} ($${t.uc}/${t.unit})`;
+    b.onclick=()=> addLine({desc:t.name, unit:t.unit, qty:1, uc:t.uc, hrs:0, rate:+$('#blended').value||55, eq:0, tax:(t.tax!==false)});
+    box.appendChild(b);
+  });
+}
+
+// Photos & annotations
+const toDataURL=f=> new Promise(res=>{const r=new FileReader(); r.onload=e=>res(e.target.result); r.readAsDataURL(f);});
+$('#photos').addEventListener('change', async (e)=>{ const box=$('#thumbs'); for(const f of e.target.files){ const src=await toDataURL(f); const img=new Image(); img.src=src; img.style.height='70px'; img.style.border='1px solid #e5e7eb'; img.style.borderRadius='8px'; box.appendChild(img); } });
+const canvas=document.getElementById('annotator'); const ctx=canvas.getContext('2d'); let drawing=false; ctx.lineWidth=3; ctx.strokeStyle='#ef4444';
+canvas.addEventListener('mousedown', e=>{ drawing=true; ctx.beginPath(); ctx.moveTo(e.offsetX,e.offsetY); });
+canvas.addEventListener('mousemove', e=>{ if(!drawing)return; ctx.lineTo(e.offsetX,e.offsetY); ctx.stroke(); });
+canvas.addEventListener('mouseup', ()=> drawing=false);
+document.getElementById('annoClear').onclick=()=> ctx.clearRect(0,0,canvas.width,canvas.height);
+document.getElementById('annoUse').onclick=()=>{ const img=new Image(); img.src=canvas.toDataURL(); img.style.height='70px'; img.style.border='1px solid var(--g)'; img.style.borderRadius='8px'; $('#thumbs').appendChild(img); };
+
+// Voice to text
+document.getElementById('startDictate').onclick=()=>{
+  const n=window; const SR = n.SpeechRecognition || n.webkitSpeechRecognition;
+  if(!SR){ alert('Speech recognition not supported on this device.'); return; }
+  const rec = new SR(); rec.lang='en-US'; rec.interimResults=false; rec.onresult=(e)=>{ const t=[...e.results].map(r=>r[0].transcript).join(' '); $('#notes').value = ($('#notes').value+' '+t).trim(); }; rec.start();
+};
+
+// QR (offline pseudo-QR)
+function drawQR(text, canvasId){ 
+  const c=document.getElementById(canvasId); const x=c.getContext('2d'); x.clearRect(0,0,c.width,c.height);
+  x.fillStyle='#fff'; x.fillRect(0,0,c.width,c.height); x.fillStyle='#000';
+  let h=0; for(let i=0;i<text.length;i++) h=(h*31 + text.charCodeAt(i))>>>0;
+  const n=29, s=Math.floor(c.width/n);
+  for(let r=0;r<n;r++) for(let col=0;col<n;col++){ const bit=((h>>((r+col)%24))&1) ^ ((r*col)%3==0?1:0); if(bit) x.fillRect(col*s,r*s,s-1,s-1); }
+}
+document.getElementById('makeQR').onclick=()=>{ const url=($('#payUrl2').value.trim()||$('#payUrl').value.trim()); if(!url){ alert('Enter a Payment URL first.'); return; } drawQR(url,'qrCanvas'); drawQR(url,'pQR'); };
+
+// Proposal toggle
+let selectedOption='Target';
+function chooseOption(name){ selectedOption=name; alert('Selected: '+name); }
+$('#toggleProposal').onclick=()=>{
+  calc();
+  $('#pClient').textContent=$('#client').value; $('#pAddr').textContent=$('#address').value;
+  $('#pJob').textContent=$('#jobName').value; $('#pDate').textContent=$('#jobDate').value || new Date().toISOString().slice(0,10);
+  $('#pContact').textContent = `${$('#website').value} • ${$('#phone').value} • ${$('#email').value}`;
+  $('#pOption').textContent = selectedOption;
+  $('#pTerms').textContent = $('#terms').value;
+  $('#pPhotos').innerHTML=''; $('#thumbs').querySelectorAll('img').forEach(img=>{ const c=new Image(); c.src=img.src; c.style.width='100%'; c.style.border='1px solid #e5e7eb'; c.style.borderRadius='8px'; $('#pPhotos').appendChild(c); });
+  const p=$('#proposal'); p.style.display = (p.style.display==='block'?'none':'block'); scrollTo(0,0);
+};
+
+// Signature
+const pad=document.getElementById('sigPad'); const sctx=pad.getContext('2d'); let sd=false; sctx.lineWidth=2; sctx.strokeStyle='#111';
+function spos(e){const r=pad.getBoundingClientRect();const x=(e.touches?e.touches[0].clientX:e.clientX)-r.left;const y=(e.touches?e.touches[0].clientY:e.clientY)-r.top;return {x,y};}
+function sstart(e){sd=true;const p=spos(e);sctx.beginPath();sctx.moveTo(p.x,p.y);e.preventDefault();}
+function smove(e){if(!sd)return;const p=spos(e);sctx.lineTo(p.x,p.y);sctx.stroke();e.preventDefault();}
+function send(){sd=false;}
+pad.addEventListener('mousedown', sstart); pad.addEventListener('mousemove', smove); pad.addEventListener('mouseup', send); pad.addEventListener('mouseleave', send);
+pad.addEventListener('touchstart', sstart, {passive:false}); pad.addEventListener('touchmove', smove, {passive:false}); pad.addEventListener('touchend', send);
+document.getElementById('clearSig').onclick=()=> sctx.clearRect(0,0,pad.width,pad.height);
+
+// Init
+function boot(){ addLine(); addLine(); renderCatalog(); renderCrews(); renderEquip(); calc(); }
+boot();
+
+// --- CSV Export ---
+function rowsToCsv(){
+  const rows=[['#','Description','Unit','Qty','UnitCost','CrewHrs','Rate','Equip','Taxable','LineTotal']];
+  [...$('#lines tbody').children].forEach(tr=>{
+    const t = [
+      tr.children[0].textContent.trim(),
+      tr.querySelector('.desc').value.replaceAll(',', ' '),
+      tr.querySelector('.unit').value,
+      tr.querySelector('.qty').value,
+      tr.querySelector('.uc').value,
+      tr.querySelector('.hrs').value,
+      tr.querySelector('.rate').value,
+      tr.querySelector('.eq').value,
+      tr.querySelector('.tax').checked ? 'Y' : 'N',
+      tr.querySelector('.lt').textContent.replace(/[^0-9.\-]/g,'')
+    ];
+    rows.push(t);
+  });
+  return rows.map(r=>r.join(',')).join('\n');
+}
+function exportCsv(){
+  const csv = rowsToCsv();
+  const blob = new Blob([csv], {type:'text/csv'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const safeName = ($('#client').value||'quote').replace(/[^a-z0-9\-_.]+/gi,'_');
+  a.href = url; a.download = `${safeName}_quote.csv`; a.click();
+  URL.revokeObjectURL(url);
+}
+$('#exportCsv').onclick = exportCsv;
+
+// --- Email Quote ---
+function composeEmail(){
+  calc();
+  const client=$('#client').value||'Client';
+  const job=$('#jobName').value||'Project';
+  const addr=$('#address').value||'';
+  const contact=`${$('#website').value} | ${$('#phone').value} | ${$('#email').value}`;
+  const opt=$('#pOption').textContent || 'Target';
+  const invText=[...$('#investment').querySelectorAll('.line')].map(d=>d.textContent.trim()).join('\n');
+  const body = `Hello ${client},%0D%0A%0D%0A`
+    + `Here is your quote for "${job}" at ${addr}.%0D%0A`
+    + `%0D%0ASelected Option: ${opt}%0D%0A%0D%0A`
+    + invText.replaceAll('&','and').replaceAll('%','pct').replaceAll('#','No.') + '%0D%0A%0D%0A'
+    + `Prepared by: ${contact}%0D%0A`;
+  const subj = encodeURIComponent(`Estimate: ${client} – ${job}`);
+  const mailto = `mailto:?subject=${subj}&body=${body}`;
+  window.location.href = mailto;
+}
+$('#emailQuote').onclick = composeEmail;
+
+// --- Google Sheet Sync (via Apps Script Web App) ---
+async function syncToSheet(payload){
+  const url = ($('#sheetUrl').value||'').trim();
+  if(!url){ alert('Enter your Apps Script Web App URL under "Sheet Sync URL".'); return; }
+  try{
+    const res = await fetch(url, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(payload)
+    });
+    if(!res.ok){ throw new Error('HTTP '+res.status); }
+    const data = await res.text();
+    alert('Synced to Google Sheet. Response: '+data.slice(0,140));
+  }catch(err){
+    alert('Sync failed: '+err.message+'\n(Check CORS, deployment access, and that the URL ends with /exec)');
+  }
+}
+function buildPayload(){
+  calc();
+  const lines=[...$('#lines tbody').children].map(tr=>({
+    idx: tr.children[0].textContent.trim(),
+    desc: tr.querySelector('.desc').value,
+    unit: tr.querySelector('.unit').value,
+    qty: parseFloat(tr.querySelector('.qty').value||0),
+    unit_cost: parseFloat(tr.querySelector('.uc').value||0),
+    crew_hrs: parseFloat(tr.querySelector('.hrs').value||0),
+    rate: parseFloat(tr.querySelector('.rate').value||0),
+    equip: parseFloat(tr.querySelector('.eq').value||0),
+    taxable: tr.querySelector('.tax').checked,
+    line_total: parseFloat(tr.querySelector('.lt').textContent.replace(/[^0-9.\-]/g,''))
+  }));
+  const investment=[...$('#investment').querySelectorAll('.line')].map(d=>d.textContent.trim());
+  return {
+    business: $('#bizName').value,
+    prepared_by: $('#preparedBy').value,
+    phone: $('#phone').value,
+    email: $('#email').value,
+    website: $('#website').value,
+    client: $('#client').value,
+    address: $('#address').value,
+    job_name: $('#jobName').value,
+    job_date: $('#jobDate').value,
+    rate_plan: $('#ratePlan').value,
+    discount: $('#discount').value,
+    deposit: $('#deposit').value,
+    overhead_pct: $('#overhead').value,
+    profit_target_pct: $('#targetProfit').value,
+    tax_rate_pct: $('#taxRate').value,
+    tax_base: $('#taxBase').value,
+    selected_option: (window.selectedOption||'Target'),
+    investment_lines: investment,
+    terms: ($('#terms')?$('#terms').value:$('#pTerms').textContent),
+    catalog_snapshot: (localStorage.getItem('srq_catalog')||null),
+    lines
+  };
+}
+const proposal = document.getElementById('proposal');
+const syncBar = document.createElement('div'); syncBar.style.marginTop='12px';
+syncBar.innerHTML = '<button id="syncSheet" class="ghost">Sync to Google Sheet</button>';
+proposal.appendChild(syncBar);
+document.addEventListener('click', (e)=>{
+  if(e.target && e.target.id==='syncSheet'){
+    syncToSheet(buildPayload());
+  }
+});
+
+
+// --- Quote Auto-Numbering & Status ---
+function loadCounter(){ try { return parseInt(localStorage.getItem('srq_quote_counter')||'1000',10); } catch(e){ return 1000; } }
+function saveCounter(n){ localStorage.setItem('srq_quote_counter', String(n)); }
+function assignQuoteNo(){
+  let q = localStorage.getItem('srq_current_quote_no');
+  if(!q){
+    const next = loadCounter();
+    q = String(next);
+    localStorage.setItem('srq_current_quote_no', q);
+    saveCounter(next+1);
+  }
+  $('#quoteNo').value = q;
+}
+function clearQuoteNo(){ localStorage.removeItem('srq_current_quote_no'); assignQuoteNo(); }
+
+function statusKey(){ return 'srq_status_' + ($('#quoteNo').value||'temp'); }
+$('#status').addEventListener('change', ()=> localStorage.setItem(statusKey(), $('#status').value));
+function loadStatus(){ const v = localStorage.getItem(statusKey()); if(v) $('#status').value = v; }
+
+// --- Export Proposal as PNG ---
+async function exportProposalPng(){
+  const node = document.getElementById('proposal');
+  const wasHidden = node.style.display === 'none' || getComputedStyle(node).display === 'none';
+  if(wasHidden){ node.style.display = 'block'; }
+  const rect = node.getBoundingClientRect();
+  const w = Math.max(900, rect.width);
+  const h = rect.height + 40;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}">
+    <foreignObject x="0" y="0" width="100%" height="100%">
+      ${new XMLSerializer().serializeToString(node)}
+    </foreignObject>
+  </svg>`;
+  const img = new Image();
+  const svgBlob = new Blob([svg], {type: 'image/svg+xml;charset=utf-8'});
+  const url = URL.createObjectURL(svgBlob);
+  await new Promise(res=>{ img.onload=()=>res(); img.src=url; });
+  const canvas = document.createElement('canvas'); canvas.width=w; canvas.height=h;
+  const ctx = canvas.getContext('2d'); ctx.fillStyle='#fff'; ctx.fillRect(0,0,w,h); ctx.drawImage(img,0,0);
+  URL.revokeObjectURL(url);
+  const pngUrl = canvas.toDataURL('image/png');
+  const a = document.createElement('a');
+  const safeName = (`${$('#client').value||'client'}_${$('#jobName').value||'job'}_${$('#quoteNo').value||''}`).replace(/[^a-z0-9\-_\.]+/gi,'_');
+  a.href = pngUrl; a.download = `${safeName}.png`; a.click();
+  if(wasHidden){ node.style.display = 'none'; }
+}
+$('#exportPng').onclick = exportProposalPng;
+
+// --- Email via Apps Script ---
+async function emailViaScript(){
+  const url = ($('#sheetUrl').value||'').trim();
+  const to = ($('#clientEmail').value||'').trim();
+  if(!url){ alert('Enter your Apps Script Web App URL.'); return; }
+  if(!to){ alert('Enter the Client Email.'); return; }
+  const payload = buildPayload();
+  payload.action = 'email';
+  payload.to = to;
+  payload.quote_no = $('#quoteNo').value;
+  try{
+    const res = await fetch(url, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)});
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const txt = await res.text();
+    alert('Email requested. Script response: '+txt.slice(0,140));
+  }catch(e){
+    alert('Email via script failed: '+e.message);
+  }
+}
+$('#emailViaScript').onclick = emailViaScript;
+
+// --- Enhance payload for both sync and email ---
+const _buildPayloadOrig = buildPayload;
+buildPayload = function(){
+  const p = _buildPayloadOrig();
+  p.quote_no = $('#quoteNo').value;
+  p.status = $('#status').value;
+  p.generated_at = new Date().toISOString();
+  return p;
+}
+
+// --- Boot hooks ---
+const _bootOrig = boot;
+boot = function(){
+  _bootOrig();
+  assignQuoteNo(); loadStatus();
+  $('#pOption').textContent = (window.selectedOption||'Target');
+};
+
+</script>
+  <script type="module" src="/quote-mobile.js"></script>
+</body></html>
